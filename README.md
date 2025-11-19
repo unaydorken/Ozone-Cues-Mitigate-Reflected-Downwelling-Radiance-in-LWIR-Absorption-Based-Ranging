@@ -1,1 +1,1 @@
-# Thermal-Hyperspectral-Absorption-Based-Ranging
+# Ozone Cues Mitigate Reflected Downwelling Radiance in LWIR Absorption-Based Ranging
