@@ -88,12 +88,13 @@ def read_mat_file(directory, filename):
     return mat_contents
 
 
-def load_data(HSI_directory, downwelling_flag = True):
+def load_data(HSI_directory, filename, downwelling_flag = True):
     # Load HSI
-    HSI = read_mat_file(HSI_directory, 'DC2P5S1.mat')
+    HSI = read_mat_file(HSI_directory, filename)
 
     wavelength = HSI['lambda']
-    HSI = HSI['measurements']
+    T_air = HSI['T_air']
+    HSI = HSI['meas']
 
     # Load Downwelling Radiances
     dw_r = read_mat_file(HSI_directory, 'I_downwelling_res.mat')
@@ -105,7 +106,7 @@ def load_data(HSI_directory, downwelling_flag = True):
 
     HSI = HSI[:, :, 0:247]
     wavelength = wavelength[:, 0:247]
-    attenuation = attenuation[0:247]
+    attenuation = attenuation[:, 0:247]
     dw_r = dw_r[0:247, :]
 
     [N, M, K] = HSI.shape
@@ -119,7 +120,7 @@ def load_data(HSI_directory, downwelling_flag = True):
     if not downwelling_flag:
         dw_r = np.zeros_like(dw_r)
     
-    return HSI, wavelength, dw_r, attenuation
+    return HSI, wavelength, dw_r, attenuation, T_air
 
 def standardize_data(data, mean, std):
     return (data - mean) / std
@@ -440,15 +441,14 @@ def solve(wavelength, dw_r, T_env, measured, attenuation, T_air, num_iterations=
 
     return V_r.detach().cpu().numpy(), T_r.detach().cpu().numpy(), emissivity_r.detach().cpu().numpy(), d_r.detach().cpu().numpy()
 
-def solve_full_scene(HSI_directory, downwelling_flag = True, chunk_size=64, lr=1e-2, num_iterations=100000, emiss_reg=1e7, TV_reg=0):
-    HSI, wavelength, dw_r, attenuation = load_data(HSI_directory, downwelling_flag=downwelling_flag)
-    HSI = HSI[:, 901:1157, :, :]
+def solve_full_scene(HSI_directory, filename, downwelling_flag=True, chunk_size=64, lr=1e-2, num_iterations=100000, emiss_reg=1e7, TV_reg=0):
+    HSI, wavelength, dw_r, attenuation, T_air = load_data(HSI_directory, filename, downwelling_flag=downwelling_flag)
+    HSI = HSI[:, -256:, :, :]
 
     # Crop the first and second dimensions to be multiples of the chunk size
     crop_size_0 = (HSI.shape[0] // chunk_size) * chunk_size
     crop_size_1 = (HSI.shape[1] // chunk_size) * chunk_size
     HSI = HSI[:crop_size_0, :crop_size_1, :, :]
-
 
     # Converting the data to PyTorch tensors
     HSI = torch.from_numpy(HSI).float()
@@ -457,7 +457,7 @@ def solve_full_scene(HSI_directory, downwelling_flag = True, chunk_size=64, lr=1
     dw_r = torch.from_numpy(dw_r).float()
     
 
-    T_env = 0  # Environmental temperature (Basicly ignore this)
+    T_env = 0  # Environmental temperature (Basically ignore this)
 
     # Initialize tensors to store the results
     V_full = torch.zeros(HSI.shape[0], HSI.shape[1], 1, 11)
@@ -474,10 +474,10 @@ def solve_full_scene(HSI_directory, downwelling_flag = True, chunk_size=64, lr=1
             # Solve the optimization problem for the chunk
             if downwelling_flag:
                 V, T, emissivity, d = solve(wavelength, dw_r, T_env, HSI_chunk, attenuation, num_iterations=num_iterations,
-                                         T_air=289.7, lr=lr, alpha=emiss_reg, alpha_2=TV_reg, start_point= None, optimizer_type='SGD')
+                                         T_air=T_air, lr=lr, alpha=emiss_reg, alpha_2=TV_reg, start_point=None, optimizer_type='SGD')
             else:
                 V, T, emissivity, d = solve(wavelength, dw_r, T_env, HSI_chunk, attenuation, num_iterations=num_iterations,
-                                         T_air=289.7, lr=lr, alpha=emiss_reg, alpha_2=TV_reg, start_point= None, optimizer_type='Adam')
+                                         T_air=T_air, lr=lr, alpha=emiss_reg, alpha_2=TV_reg, start_point=None, optimizer_type='Adam')
             # Convert the results to PyTorch tensors
             V = torch.from_numpy(V).float()
             T = torch.from_numpy(T).float()
@@ -499,51 +499,32 @@ def solve_full_scene(HSI_directory, downwelling_flag = True, chunk_size=64, lr=1
     }
 
     # Saving the outputs as .mat file
+    save_dir = ''
     if downwelling_flag:
-        savename = 'downwelling' + '.mat'
+        savename = save_dir + filename + '_Tair' + str(T_air) +'_downwelling' + '.mat'
     else:
-        savename = 'no_downwelling' + '.mat'
+        savename = save_dir + filename + '_Tair' + str(T_air) + '_no_downwelling' + '.mat'
     scipy.io.savemat(savename, output_data)
     print("Saved: " + savename)
 
+    return V_full.cpu().numpy(), T_full.cpu().numpy(), emissivity_full.cpu().numpy(), d_full.cpu().numpy()
 
 def main():
-    #prevr = read_mat_file('/autofs/space/marduk_001/users/unay/ABR_data/Data/Results', 'paper_reg.mat')
-
-    # plt.figure(figsize=(8, 8))
-    # plt.imshow(prevr['d'][:, :, 0, 0], cmap='viridis', aspect='auto')
-    # plt.clim(15, 150)
-    # plt.colorbar()
-    # plt.title('Distance (d) from Previous Result')
-    # plt.xlabel('X')
-    # plt.ylabel('Y') 
-    # plt.savefig('Logs/prev_distance.png')
-    # plt.close()
-
-    # pixel_x, pixel_y = 145, 0
-    # plt.figure(figsize=(8, 6))
-    # plt.plot(prevr['emissivity'][pixel_x, pixel_y, :, 0], label='Emissivity Previous Result')
-    # plt.legend()
-    # plt.savefig('Logs/prev_emissivity_pixel.png')
-
-    # plt.figure(figsize=(8, 6))
-    # plt.plot(prevr['V'][pixel_x, pixel_y, 0, :], label='V')
-    # plt.legend()
-    # plt.savefig('Logs/prev_V_pixel.png')
-    HSI_directory = "data"
-    lr = .01 #Optimizer learning rate
-    emiss_reg = 1e7 #Emissivity smoothness regularization parameter
-    TV_reg = 0 #TV regularization parameter for distance d
-    downwelling_flag = True #False: ignore downwelling, True: use downwelling data
-    chunk_size = 128 #Pixel chunk size for processing in GPU
+    HSI_directory = ""
+    filename = ""
+    lr = .01 # Optimizer learning rate
+    emiss_reg = 1e7 # Emissivity smoothness regularization parameter
+    TV_reg = 1e-4 # TV regularization parameter for distance d
+    downwelling_flag = True # False: ignore downwelling, True: use downwelling data
+    chunk_size = 128 # Pixel chunk size for processing in GPU
     if downwelling_flag:
-        num_iterations = 100000 #With downwelling reuqires more iterations
+        num_iterations = 100000 # With downwelling requires more iterations
     else:
-        num_iterations = 20000 #Without downwelling converges faster
-        lr = .001 #Optimizer learning rate
-    
-    solve_full_scene(HSI_directory,downwelling_flag=downwelling_flag, chunk_size=chunk_size, lr=lr, num_iterations=num_iterations, emiss_reg=emiss_reg, TV_reg=TV_reg)
+        num_iterations = 20000 # Without downwelling converges faster
+        lr = .0005 # Optimizer learning rate
 
+    V, T, emissivity, d = solve_full_scene(HSI_directory, filename, downwelling_flag=downwelling_flag, chunk_size=chunk_size, lr=lr, num_iterations=num_iterations, emiss_reg=emiss_reg, TV_reg=TV_reg)
+    return V, T, emissivity, d
 
 if __name__ == "__main__":
     main()
