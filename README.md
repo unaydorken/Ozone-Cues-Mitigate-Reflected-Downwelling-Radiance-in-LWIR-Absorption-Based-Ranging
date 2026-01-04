@@ -14,9 +14,9 @@ Experimental results on real LWIR data demonstrate substantial improvements in r
 ## Example Result: Effect of Downwelling Radiance
 
 <p align="center">
-  <img src="figures/RGB_photo.png" width="32%">
-  <img src="figures/introduction_hyperspectral_no_downwelling_range.png" width="32%">
-  <img src="figures/introduction_hyperspectral_with_downwelling_range.png" width="32%">
+  <img src="Figures/RGB_photo.png" width="32%">
+  <img src="Figures/introduction_hyperspectral_no_downwelling_range.png" width="32%">
+  <img src="Figures/introduction_hyperspectral_with_downwelling_range.png" width="32%">
 </p>
 
 <p align="center">
@@ -29,7 +29,7 @@ Experimental results on real LWIR data demonstrate substantial improvements in r
 </p>
 
 <p align="center">
-  <img src="figures/introduction_hyperspectral_spectral_signatures.png" width="85%">
+  <img src="Figures/introduction_hyperspectral_spectral_signatures.png" width="85%">
 </p>
 
 <p align="center">
