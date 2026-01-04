@@ -13,8 +13,6 @@ The hyperspectral method leverages a broader spectral range to improve robustnes
 
 Experimental results on real LWIR data demonstrate substantial improvements in ranging accuracy. In challenging scenes where neglecting reflected downwelling radiance leads to large range overestimation, the proposed methods significantly reduce error, with the hyperspectral approach achieving meter-level accuracy.
 
-
-
 <p align="center">
   <img src="Figures/RGB_photo.png" width="32%">
   <img src="Figures/introduction_hyperspectral_no_downwelling_range.png" width="32%">
@@ -45,7 +43,7 @@ Experimental results on real LWIR data demonstrate substantial improvements in r
 ## Dataset
 
 The hyperspectral datacubes are publicly available at **DARPA Invisible Headlights Dataset** [Yellin et al., 2024](https://registry.opendata.aws/darpa-invisible-headlights/).
-The attenuation, downwelling radiance dictionary are provided in `data/` folder for an example scene (Path 5 Step 1). 
+The attenuation, downwelling radiance dictionary are provided in `data/` folder for an example scene (Path 5 Step 1).
 
 ## Usage
 
