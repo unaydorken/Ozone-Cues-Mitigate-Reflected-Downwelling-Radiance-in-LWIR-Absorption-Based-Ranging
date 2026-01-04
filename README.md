@@ -1,3 +1,5 @@
+> ⚠️ This work is currently under review. The repository contains code, data examples, and figures from the preprint.
+
 # Ozone Cues Mitigate Reflected Downwelling Radiance in LWIR Absorption-Based Ranging
 Passive long-wave infrared (LWIR) absorption-based ranging estimates object distance by exploiting wavelength-dependent atmospheric absorption in emitted thermal radiation. Unlike active depth sensing, this approach operates day and night without external illumination and does not rely on scene texture.
 In natural scenes with low temperature contrast, however, reflected thermal radiation—particularly downwelling radiance from the sky—can significantly distort absorption features and lead to large range overestimation, especially for reflective materials.
@@ -11,7 +13,7 @@ The hyperspectral method leverages a broader spectral range to improve robustnes
 
 Experimental results on real LWIR data demonstrate substantial improvements in ranging accuracy. In challenging scenes where neglecting reflected downwelling radiance leads to large range overestimation, the proposed methods significantly reduce error, with the hyperspectral approach achieving meter-level accuracy.
 
-## Example Result: Effect of Downwelling Radiance
+
 
 <p align="center">
   <img src="Figures/RGB_photo.png" width="32%">
@@ -39,3 +41,33 @@ Experimental results on real LWIR data demonstrate substantial improvements in r
   reflected downwelling radiance.
   </em>
 </p>
+
+## Dataset
+
+The hyperspectral datacubes are publicly available at **DARPA Invisible Headlights Dataset** [Yellin et al., 2024](https://registry.opendata.aws/darpa-invisible-headlights/).
+
+## Usage
+
+### 1. Hyperspectral Estimation (Python)
+
+`hyperspectral_estimation.py` generates hyperspectral absorption-based ranging results. It supports two modes:
+
+- **Without downwelling correction:** reproduces the method from [U. Dorken Gallastegi et al., IEEE TPAMI, 2025](https://ieeexplore.ieee.org/abstract/document/10877411).
+- **With downwelling correction:** implements the new ozone-based method that corrects for reflected downwelling radiance.
+
+### 2. Bispectral / Quadspectral Estimation (Matlab)
+
+The MATLAB code `bispectral_estimation.m` and `quadspectral_estimation.m` in `matlab/Functions` folder implements bispectral and quadspectral absorption-based ranging methods:
+
+- **Bispectral:** uses two narrow spectral bands (near water vapor absorption) to compute a simplified range estimate without downwelling correction ([U. Dorken Gallastegi et al., IEEE TPAMI, 2025](https://ieeexplore.ieee.org/abstract/document/10877411)).
+- **Quadspectral:** uses four narrow spectral bands (two near water vapor absorption and two near ozone absorption) to compute a closed-form range estimate that accounts for reflected downwelling radiance.
+
+The scripts in the `matlab/` folder can also be used to regenerate the figures presented in the manuscript.  
+
+## Citation
+
+If you use this repository, please cite the manuscript (under review):
+
+Unay Dorken Gallastegi, Wentao Shangguan, Vaibhav Choudhary, Akshay Agarwal, Hoover Rueda-Chacón, Martin J. Stevens, and Vivek K Goyal,  
+"Ozone Cues Mitigate Reflected Downwelling Radiance in LWIR Absorption-Based Ranging,"  
+Manuscript under review, 2026.
