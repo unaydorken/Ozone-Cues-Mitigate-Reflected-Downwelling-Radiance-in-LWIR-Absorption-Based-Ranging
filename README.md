@@ -45,6 +45,7 @@ Experimental results on real LWIR data demonstrate substantial improvements in r
 ## Dataset
 
 The hyperspectral datacubes are publicly available at **DARPA Invisible Headlights Dataset** [Yellin et al., 2024](https://registry.opendata.aws/darpa-invisible-headlights/).
+The attenuation, downwelling radiance dictionary are provided in `data/` folder for an example scene (Path 5 Step 1). 
 
 ## Usage
 
