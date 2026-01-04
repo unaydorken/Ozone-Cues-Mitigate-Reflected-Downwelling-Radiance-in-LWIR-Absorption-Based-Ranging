@@ -10,4 +10,32 @@ We propose two new ranging methods that exploit this insight. The quadspectral m
 The hyperspectral method leverages a broader spectral range to improve robustness under low temperature contrast while jointly estimating range, object temperature, emissivity profiles, and reflected downwelling contributions.
 
 Experimental results on real LWIR data demonstrate substantial improvements in ranging accuracy. In challenging scenes where neglecting reflected downwelling radiance leads to large range overestimation, the proposed methods significantly reduce error, with the hyperspectral approach achieving meter-level accuracy.
-![Figure from the paper](Figures/Figure2.png)
+
+## Example Result: Effect of Downwelling Radiance
+
+<p align="center">
+  <img src="figures/RGB_photo.png" width="32%">
+  <img src="figures/introduction_hyperspectral_no_downwelling_range.png" width="32%">
+  <img src="figures/introduction_hyperspectral_with_downwelling_range.png" width="32%">
+</p>
+
+<p align="center">
+  <em>
+  Left: RGB photograph (reference only).  
+  Middle: Absorption-based ranging when downwelling radiance is neglected
+  (reflective surfaces are overestimated).  
+  Right: Ranging results when reflected downwelling radiance is accounted for.
+  </em>
+</p>
+
+<p align="center">
+  <img src="figures/introduction_hyperspectral_spectral_signatures.png" width="85%">
+</p>
+
+<p align="center">
+  <em>
+  Spectral measurements at a reflective panel, grass area, and sky pixel.
+  The ozone absorption band provides a distinctive cue for identifying
+  reflected downwelling radiance.
+  </em>
+</p>
