@@ -1,5 +1,3 @@
-> ⚠️ This work is currently under review. The repository contains code, data examples, and figures from the preprint.
-
 # Ozone Cues Mitigate Reflected Downwelling Radiance in LWIR Absorption-Based Ranging
 Passive long-wave infrared (LWIR) absorption-based ranging estimates object distance by exploiting wavelength-dependent atmospheric absorption in emitted thermal radiation. Unlike active depth sensing, this approach operates day and night without external illumination and does not rely on scene texture.
 In natural scenes with low temperature contrast, however, reflected thermal radiation—particularly downwelling radiance from the sky—can significantly distort absorption features and lead to large range overestimation, especially for reflective materials.
