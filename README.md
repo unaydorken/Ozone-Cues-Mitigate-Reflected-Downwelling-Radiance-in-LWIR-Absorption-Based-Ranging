@@ -65,8 +65,19 @@ The scripts in the `matlab/` folder can also be used to regenerate the figures p
 
 ## Citation
 
-If you use this repository, please cite the manuscript (under review):
+If you use this repository, please cite:
 
-Unay Dorken Gallastegi, Wentao Shangguan, Vaibhav Choudhary, Akshay Agarwal, Hoover Rueda-Chacón, Martin J. Stevens, and Vivek K Goyal,  
-"Ozone Cues Mitigate Reflected Downwelling Radiance in LWIR Absorption-Based Ranging,"  
-Manuscript under review, 2026.
+U. Dorken Gallastegi, W. Shangguan, V. Choudhary, A. Agarwal, H. Rueda-Chacón, M. J. Stevens, and V. K. Goyal,
+"Ozone Cues Mitigate Reflected Downwelling Radiance in LWIR Absorption-Based Ranging,"
+IEEE Transactions on Computational Imaging, vol. 12, pp. 587–600, 2026.
+https://doi.org/10.1109/TCI.2026.3668998
+
+@ARTICLE{11417700,
+  author={{Dorken Gallastegi}, Unay and Shangguan, Wentao and Choudhary, Vaibhav and Agarwal, Akshay and Rueda-Chacón, Hoover and Stevens, Martin J. and Goyal, Vivek K},
+  journal={IEEE Transactions on Computational Imaging},
+  title={Ozone Cues Mitigate Reflected Downwelling Radiance in LWIR Absorption-Based Ranging},
+  year={2026},
+  volume={12},
+  pages={587-600},
+  doi={10.1109/TCI.2026.3668998}
+}
